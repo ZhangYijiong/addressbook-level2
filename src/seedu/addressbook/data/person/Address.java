@@ -8,12 +8,16 @@ import seedu.addressbook.data.exception.IllegalValueException;
  */
 public class Address {
 
-    public static final String EXAMPLE = "123, some street";
-    public static final String MESSAGE_ADDRESS_CONSTRAINTS = "Person addresses can be in any format";
-    public static final String ADDRESS_VALIDATION_REGEX = ".+";
+    public static final String EXAMPLE = "123, some street, some unit, some postalcode";
+    public static final String MESSAGE_ADDRESS_CONSTRAINTS = "Person addresses can only be in the format a/BLOCK, STREET, UNIT, POSTAL_CODE";
+    public static final String ADDRESS_VALIDATION_REGEX = ".+, .+, .+, .+";
 
     public final String value;
     private boolean isPrivate;
+    private Block block;
+    private Street street;
+    private Unit unit;
+    private PostalCode postalCode;
 
     /**
      * Validates given address.
@@ -26,7 +30,21 @@ public class Address {
         if (!isValidAddress(trimmedAddress)) {
             throw new IllegalValueException(MESSAGE_ADDRESS_CONSTRAINTS);
         }
-        this.value = trimmedAddress;
+        String[] splitedAddress = splitAddress(trimmedAddress);
+        value = formAddress(splitedAddress);
+    }
+
+    private String[] splitAddress(String trimmedAddress) {
+        return trimmedAddress.split(", ", 4);
+    }
+
+    private String formAddress(String[] splitAddress) {
+        block = new Block(splitAddress[0]);
+        street = new Street(splitAddress[1]);
+        unit = new Unit(splitAddress[2]);
+        postalCode = new PostalCode(splitAddress[3]);
+        String result = block + ", " + street + ", " + unit + ", " + postalCode;
+        return result;
     }
 
     /**
@@ -55,5 +73,66 @@ public class Address {
 
     public boolean isPrivate() {
         return isPrivate;
+    }
+
+}
+
+class Block{
+    private String blockName;
+
+    public Block(String name){
+        blockName = name;
+    }
+
+    private String getBlockName(){
+        return blockName;
+    }
+
+    private void setBlockName(String newBlockName){
+        blockName = newBlockName;
+    }
+
+}
+class Street {
+    private String streetName;
+
+    public Street(String name) {
+        streetName = name;
+    }
+    private String getStreetName(){
+        return streetName;
+    }
+
+    private void setStreetName(String newStreetName){
+        streetName = newStreetName;
+    }
+}
+class Unit {
+    private String unitName;
+
+    public Unit(String name) {
+        unitName = name;
+
+    }
+    private String getUnitName(){
+        return unitName;
+    }
+
+    private void setUnitName(String newUnitName){
+        unitName = newUnitName;
+    }
+}
+class PostalCode {
+    private String postalCode;
+
+    public PostalCode(String number) {
+        postalCode = number;
+    }
+    private String getPostalCode(){
+        return postalCode;
+    }
+
+    private void setPostalCode(String newPostalCode){
+        postalCode = newPostalCode;
     }
 }
