@@ -26,7 +26,9 @@ import java.nio.file.Paths;
  */
 public class StorageFile {
 
-    /** Default file path used if the user doesn't provide the file name. */
+    /**
+     * Default file path used if the user doesn't provide the file name.
+     */
     public static final String DEFAULT_STORAGE_FILEPATH = "addressbook.xml";
 
     /* Note: Note the use of nested classes below.
@@ -48,6 +50,16 @@ public class StorageFile {
      */
     public static class StorageOperationException extends Exception {
         public StorageOperationException(String message) {
+            super(message);
+        }
+    }
+
+    /**
+     * Signals that some error has occured while trying to makes the storage file read only
+     * while the program is running
+     */
+    public static class StorageReadOnlyException extends Exception {
+        public StorageReadOnlyException(String message) {
             super(message);
         }
     }
@@ -92,7 +104,7 @@ public class StorageFile {
      *
      * @throws StorageOperationException if there were errors converting and/or storing data to file.
      */
-    public void save(AddressBook addressBook) throws StorageOperationException {
+    public void save(AddressBook addressBook) throws StorageOperationException{
 
         /* Note: Note the 'try with resource' statement below.
          * More info: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
@@ -106,11 +118,12 @@ public class StorageFile {
             marshaller.marshal(toSave, fileWriter);
 
         } catch (IOException ioe) {
-            throw new StorageOperationException("Error writing to file: " + path);
+            throw new StorageOperationException("Error writing to file: " + path + " file might be read-only");
         } catch (JAXBException jaxbe) {
             throw new StorageOperationException("Error converting address book into storage format");
         }
     }
+
 
     /**
      * Loads data from this storage file.
@@ -140,7 +153,7 @@ public class StorageFile {
             throw new AssertionError("A non-existent file scenario is already handled earlier.");
         // other errors
         } catch (IOException ioe) {
-            throw new StorageOperationException("Error writing to file: " + path);
+            throw new StorageOperationException("Error writing to file: " + path + " file might be read-only");
         } catch (JAXBException jaxbe) {
             throw new StorageOperationException("Error parsing file data format");
         } catch (IllegalValueException ive) {
