@@ -37,6 +37,16 @@ public class Command {
     }
 
     /**
+     * Constructs a feedback message to summarise an operation that sorted all persons.
+     *
+     * @param sortedPersons used to generate summary
+     * @return summary message for persons sorted
+     */
+    public static String getMessageForSortedPersonShownSummary(List<? extends ReadOnlyPerson> sortedPersons) {
+        return String.format(Messages.MESSAGE_PERSONS_SORTED_OVERVIEW, sortedPersons.size());
+    }
+
+    /**
      * Executes the command and returns the result.
      */
     public CommandResult execute(){
